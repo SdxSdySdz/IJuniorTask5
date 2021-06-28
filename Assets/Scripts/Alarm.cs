@@ -9,22 +9,20 @@ public class Alarm : MonoBehaviour
     private AudioSource _audioSource;
     private float _minVolume;
     private float _maxVolume;
-    private Coroutine _currentCoroutine;
+    private Coroutine _volumeChangingCoroutine;
 
-    private float _volume
+    public float Volume
     {
         get
         {
             return _audioSource.volume;
         }
-        
-        set
+
+        private set
         {
             _audioSource.volume = value;
         }
     }
-    private bool _isMaxVolumeReached => _volume == 1;
-    private bool _isMinVolumeReached => _volume == 0;
 
     private void Start()
     {
@@ -32,19 +30,19 @@ public class Alarm : MonoBehaviour
         _minVolume = 0;
         _maxVolume = 1;
 
-        _volume = 0;
+        Volume = 0;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent(out Player player))
         {
-            if (_currentCoroutine != null)
+            if (_volumeChangingCoroutine != null)
             {
-                StopCoroutine(_currentCoroutine);
+                StopCoroutine(_volumeChangingCoroutine);
             }
-            
-            _currentCoroutine = StartCoroutine(Activate());
+
+            Activate();
         }
     }
 
@@ -52,30 +50,31 @@ public class Alarm : MonoBehaviour
     {
         if (other.TryGetComponent(out Player player))
         {
-            if (_currentCoroutine != null)
+            if (_volumeChangingCoroutine != null)
             {
-                StopCoroutine(_currentCoroutine);
+                StopCoroutine(_volumeChangingCoroutine);
             }
 
-            _currentCoroutine = StartCoroutine(Deactivate());
+            Deactivate();
         }
     }
 
-    private IEnumerator Activate()
+    private IEnumerator ChangeVolume(float _targetVolume)
     {
-        while (_isMaxVolumeReached == false)
+        while (Volume != _targetVolume)
         {
-            _volume = Mathf.MoveTowards(_volume, _maxVolume, _volumeChangingRate * Time.fixedDeltaTime);
-            yield return new WaitForFixedUpdate();
+            Volume = Mathf.MoveTowards(Volume, _targetVolume, _volumeChangingRate * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
         }
     }
 
-    private IEnumerator Deactivate()
+    private void Activate()
     {
-        while (_isMinVolumeReached == false)
-        {
-            _volume = Mathf.MoveTowards(_volume, _minVolume, _volumeChangingRate * Time.fixedDeltaTime);
-            yield return new WaitForFixedUpdate();
-        }
+        _volumeChangingCoroutine = StartCoroutine(ChangeVolume(_maxVolume));
+    }
+
+    private void Deactivate()
+    {
+        _volumeChangingCoroutine = StartCoroutine(ChangeVolume(_minVolume));
     }
 }
