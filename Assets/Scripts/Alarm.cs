@@ -9,20 +9,7 @@ public class Alarm : MonoBehaviour
     private AudioSource _audioSource;
     private float _minVolume;
     private float _maxVolume;
-    private Coroutine _volumeChangingCoroutine;
-
-    public float Volume
-    {
-        get
-        {
-            return _audioSource.volume;
-        }
-
-        private set
-        {
-            _audioSource.volume = value;
-        }
-    }
+    private Coroutine _volumeChangingJob;
 
     private void Start()
     {
@@ -30,16 +17,16 @@ public class Alarm : MonoBehaviour
         _minVolume = 0;
         _maxVolume = 1;
 
-        Volume = 0;
+        _audioSource.volume = 0;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Player player))
+        if (other.TryGetComponent(out PlayerMover player))
         {
-            if (_volumeChangingCoroutine != null)
+            if (_volumeChangingJob != null)
             {
-                StopCoroutine(_volumeChangingCoroutine);
+                StopCoroutine(_volumeChangingJob);
             }
 
             Activate();
@@ -48,11 +35,11 @@ public class Alarm : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.TryGetComponent(out Player player))
+        if (other.TryGetComponent(out PlayerMover player))
         {
-            if (_volumeChangingCoroutine != null)
+            if (_volumeChangingJob != null)
             {
-                StopCoroutine(_volumeChangingCoroutine);
+                StopCoroutine(_volumeChangingJob);
             }
 
             Deactivate();
@@ -61,20 +48,20 @@ public class Alarm : MonoBehaviour
 
     private IEnumerator ChangeVolume(float _targetVolume)
     {
-        while (Volume != _targetVolume)
+        while (_audioSource.volume != _targetVolume)
         {
-            Volume = Mathf.MoveTowards(Volume, _targetVolume, _volumeChangingRate * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _targetVolume, _volumeChangingRate * Time.deltaTime);
+            yield return new WaitForSecondsRealtime(0.01f);
         }
     }
 
     private void Activate()
     {
-        _volumeChangingCoroutine = StartCoroutine(ChangeVolume(_maxVolume));
+        _volumeChangingJob = StartCoroutine(ChangeVolume(_maxVolume));
     }
 
     private void Deactivate()
     {
-        _volumeChangingCoroutine = StartCoroutine(ChangeVolume(_minVolume));
+        _volumeChangingJob = StartCoroutine(ChangeVolume(_minVolume));
     }
 }
