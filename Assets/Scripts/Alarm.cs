@@ -53,6 +53,8 @@ public class Alarm : MonoBehaviour
             _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _targetVolume, _volumeChangingRate * Time.deltaTime);
             yield return new WaitForSecondsRealtime(0.01f);
         }
+
+        yield break;
     }
 
     private void Activate()
