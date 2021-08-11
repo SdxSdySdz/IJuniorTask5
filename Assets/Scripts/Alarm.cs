@@ -48,14 +48,10 @@ public class Alarm : MonoBehaviour
 
     private IEnumerator ChangeVolume(float _targetVolume)
     {
-        WaitForSecondsRealtime waitForSecondsRealtime = new WaitForSecondsRealtime(0.01f);
-
-        if (waitForSecondsRealtime == null) yield break;
-
         while (_audioSource.volume != _targetVolume)
         {
             _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _targetVolume, _volumeChangingRate * Time.deltaTime);
-            yield return waitForSecondsRealtime;
+            yield return null;
         }
     }
 
