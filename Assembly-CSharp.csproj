@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{D3B10AA6-A20F-39CA-6B87-F3A169707C95}</ProjectGuid>
+    <ProjectGuid>{E2F833E3-C81F-B5A7-C057-13E4F18C41D7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -56,10 +56,11 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Alarm.cs" />
     <Compile Include="Assets\FurnishedCabin\Scripts\MoveObjectController.cs" />
     <Compile Include="Assets\FurnishedCabin\Scripts\MoveableObject.cs" />
-    <Compile Include="Assets\Scripts\Alarm.cs" />
-    <Compile Include="Assets\Scripts\Player.cs" />
+    <Compile Include="Assets\Scripts\PlayerMover.cs" />
+    <Compile Include="Assets\Scripts\CameraMover.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
